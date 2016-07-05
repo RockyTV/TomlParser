@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomlParser", "TomlParser\TomlParser.csproj", "{82972214-A886-4412-93B1-D58D186AB959}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomlParserTester", "TomlParserTester\TomlParserTester.csproj", "{16A701B0-5FCF-493A-A06F-30E0CACF396A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{16A701B0-5FCF-493A-A06F-30E0CACF396A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
