@@ -1,29 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TomlParser
 {
 	public class TomlDocument
 	{
-		private TomlKeyValue[] rootValues;
-		private TomlTable[] tables;
-
-		public TomlKeyValue[] RootValues
-		{
-			get { return rootValues; }
-			set { rootValues = value; }
-		}
-
-		public TomlTable[] Tables
-		{
-			get { return tables; }
-			set { tables = value; }
-		}
+		public TomlKeyValue[] RootValues { get; set; }
+		public TomlTable[] Tables { get; set; }
 
 		public TomlDocument(IEnumerable<TomlKeyValue> rootValues, IEnumerable<TomlTable> tables)
 		{
-			this.rootValues = (rootValues ?? Enumerable.Empty<TomlKeyValue>()).ToArray();
-			this.tables = (tables ?? Enumerable.Empty<TomlTable>()).ToArray();
+			RootValues = (rootValues ?? Enumerable.Empty<TomlKeyValue>()).ToArray();
+			Tables = (tables ?? Enumerable.Empty<TomlTable>()).ToArray();
 		}
 	}
 }
