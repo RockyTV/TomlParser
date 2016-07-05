@@ -66,7 +66,13 @@ namespace TomlParser
 				// Ignore empty lines
 				if (string.IsNullOrEmpty(currentLine))
 				{
-					startedTable = false;
+					// Check if we have a table created and if we started it
+					// If we do and the line is empty, add it and close it.
+					if (currTable != null && startedTable)
+					{
+						if (!tables.Contains(currTable)) tables.Add(currTable);
+						startedTable = false;
+					}
 					continue;
 				}
 
