@@ -1,17 +1,19 @@
-﻿namespace TomlParser
+﻿using System;
+using System.Linq;
+namespace TomlParser
 {
     public class TomlKeyValue
 	{
-		private readonly string key;
-		private readonly object value;
-
-		public string Key { get { return key; } }
-		public object Value { get { return value; } }
+		public string Key { get; }
+		public object Value { get; }
 
 		public TomlKeyValue(string key, object value)
 		{
-			this.key = key;
-			this.value = value;
+			if (key.Any(c => !char.IsLetterOrDigit(c) && c != '-' && c != '_'))
+					throw new InvalidKeyNameException();
+
+			Key = key;
+			Value = value;
 		}
 	}
 }
