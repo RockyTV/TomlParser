@@ -54,54 +54,50 @@ namespace TomlParser
 
 		public static TomlDocument FromFile(string fileName)
 		{
-			using (StreamReader sr = new StreamReader(fileName))
+			List<TomlKeyValue> rootValues = new List<TomlKeyValue>();
+			List<TomlTable> tables = new List<TomlTable>();
+			bool startedTable = false;
+			TomlTable currTable = null;
+
+			foreach (string line in File.ReadLines(fileName))
 			{
-				string[] lines = sr.ReadToEnd().Split(new char[] { '\r' });
-				List<TomlKeyValue> rootValues = new List<TomlKeyValue>();
-				List<TomlTable> tables = new List<TomlTable>();
+				string currentLine = line.Trim();
 
-				bool startedTable = false;
-				TomlTable currTable = null;
-				for (int i = 0; i < lines.Length; i++)
+				// Ignore empty lines
+				if (string.IsNullOrEmpty(currentLine))
 				{
-					string currentLine = lines[i].Trim();
-
-					// Ignore empty lines
-					if (string.IsNullOrEmpty(currentLine))
-					{
-						startedTable = false;
-						continue;
-					}
-
-					// Ignore comments
-					if (currentLine.StartsWith("#"))
-						continue;
-
-					if (currentLine.StartsWith("["))
-					{
-						string[] tableName = currentLine.Substring(currentLine.IndexOf('[') + 1, currentLine.IndexOf(']') - 1).Split('.');
-						startedTable = true;
-						currTable = new TomlTable(tableName, null);
-						continue;
-					}
-
-					string keyName = currentLine.Remove(currentLine.IndexOf(" "));
-					string stringValue = currentLine.Remove(0, currentLine.IndexOf("=") + 1).Trim();
-
-					// Check if we have comments on the end of the line
-					// If we do, remove them
-					if (keyName.Contains("#")) keyName = keyName.Remove(keyName.LastIndexOf("#")).Trim();
-					if (stringValue.Contains("#")) stringValue = stringValue.Remove(stringValue.LastIndexOf("#")).Trim();
-
-					object keyValue = ParseValue(stringValue, GetValueType(stringValue));
-
-					if (startedTable) currTable.Values.Add(new TomlKeyValue(keyName, keyValue));
-					else rootValues.Add(new TomlKeyValue(keyName, keyValue));
-
-					if (currTable != null && !tables.Contains(currTable)) tables.Add(currTable);
+					startedTable = false;
+					continue;
 				}
-				return new TomlDocument(rootValues, tables);
+
+				// Ignore comments
+				if (currentLine.StartsWith("#"))
+					continue;
+
+				if (currentLine.StartsWith("["))
+				{
+					string[] tableName = currentLine.Substring(currentLine.IndexOf('[') + 1, currentLine.IndexOf(']') - 1).Split('.');
+					startedTable = true;
+					currTable = new TomlTable(tableName, null);
+					continue;
+				}
+
+				string keyName = currentLine.Remove(currentLine.IndexOf(" "));
+				string stringValue = currentLine.Remove(0, currentLine.IndexOf("=") + 1).Trim();
+
+				// Check if we have comments on the end of the line
+				// If we do, remove them
+				if (keyName.Contains("#")) keyName = keyName.Remove(keyName.LastIndexOf("#")).Trim();
+				if (stringValue.Contains("#")) stringValue = stringValue.Remove(stringValue.LastIndexOf("#")).Trim();
+
+				object keyValue = ParseValue(stringValue, GetValueType(stringValue));
+
+				if (startedTable) currTable.Values.Add(new TomlKeyValue(keyName, keyValue));
+				else rootValues.Add(new TomlKeyValue(keyName, keyValue));
+
+				if (currTable != null && !tables.Contains(currTable)) tables.Add(currTable);
 			}
+			return new TomlDocument(rootValues, tables);
 		}
 	}
 }
